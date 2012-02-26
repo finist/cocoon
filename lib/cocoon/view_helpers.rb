@@ -53,10 +53,11 @@ module Cocoon
         html_options = args[2] || {}
         link_to_add_association(capture(&block), f, association, html_options)
       else
-        name         = args[0]
-        f            = args[1]
-        association  = args[2]
-        html_options = args[3] || {}
+        name              = args[0]
+        f                 = args[1]
+        association       = args[2]
+        associated_params = args[3] || {}
+        html_options      = args[4] || {}
 
         render_options = html_options.delete(:render_options)
         render_options ||={}
@@ -65,7 +66,7 @@ module Cocoon
         html_options[:'data-association'] = association.to_s.singularize
         html_options[:'data-associations'] = association.to_s.pluralize
 
-        new_object = f.object.class.reflect_on_association(association).klass.new
+        new_object = f.object.class.reflect_on_association(association).klass.new(associated_params)
         html_options[:'data-template'] = CGI.escapeHTML(render_association(association, f, new_object, render_options)).html_safe
 
         link_to(name, '#', html_options )
